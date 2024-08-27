@@ -99,7 +99,7 @@ footer small {
 #results .result {
     padding:1rem;
     padding: 20px 0;
-    border-bottom: 1px solid #846a68;
+    border-bottom: 1px solid #ced4da;
 }
 
 #results .result a {
@@ -108,3 +108,26 @@ footer small {
     margin-bottom: 10px;
     display: block;
 }
+
+#marquee-container {
+           overflow: hidden;
+           white-space: nowrap;
+           box-sizing: border-box;
+           width: 100%;
+           padding: 10px 0;
+}
+ #marquee-content {
+     display: inline-block;
+     white-space: nowrap;
+     animation: marquee 20s linear infinite;
+ }
+ #marquee-content a {
+     margin: 0 15px;
+     text-decoration: none;
+     color: #007bff;
+     font-size: 16px;
+ }
+ @keyframes marquee {
+     0% { transform: translateX(100%); }
+     100% { transform: translateX(-100%); }
+ }
