@@ -117,6 +117,7 @@ footer small {
 }
 
 #marquee-container {
+  margin-top:-20px;
      overflow: hidden;
      white-space: nowrap;
      box-sizing: border-box;
