@@ -7,6 +7,13 @@ body {
   background:#f6f5f3 !important;
 }
 
+a, a:hover {
+  transition: all 0.7s;
+    -moz-transition: all 0.7s;
+    -webkit-transition: all 0.7s;
+    -o-transition: all 0.7s;
+}
+
 h1,h2,h3,h4 {
    margin-bottom:1.5rem !important;
    font-weight:600 !important;
@@ -110,23 +117,28 @@ footer small {
 }
 
 #marquee-container {
-           overflow: hidden;
-           white-space: nowrap;
-           box-sizing: border-box;
-           width: 100%;
-           padding: 10px 0;
+     overflow: hidden;
+     white-space: nowrap;
+     box-sizing: border-box;
+     width: 100%;
+     padding: 10px 0;
 }
  #marquee-content {
      display: inline-block;
      white-space: nowrap;
-     animation: marquee 20s linear infinite;
+     animation: marquee 120s linear infinite;
  }
  #marquee-content a {
+      font-size:1.8rem;
      margin: 0 15px;
      text-decoration: none;
      color: #007bff;
-     font-size: 16px;
+     opacity: 0.3;
  }
+ #marquee-content a:hover {
+   opacity:1;
+   border-bottom:1px solid #514544;
+}
  @keyframes marquee {
      0% { transform: translateX(100%); }
      100% { transform: translateX(-100%); }
