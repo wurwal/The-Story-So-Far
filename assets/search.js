@@ -13,7 +13,7 @@ function search() {
     searchIndex.forEach(page => {
         if (page.title.toLowerCase().includes(query) || page.snippet.toLowerCase().includes(query)) {
             const resultItem = document.createElement('div');
-            resultItem.classList.add('result', 'animate__fadeInDown', 'animate__animated');
+            resultItem.classList.add('result', 'animate__fadeInDown', 'animate__animated', 'animate__fast');
 
             const link = document.createElement('a');
             link.href = page.permalink;
