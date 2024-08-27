@@ -101,3 +101,10 @@ footer small {
     padding: 20px 0;
     border-bottom: 1px solid #846a68;
 }
+
+#results .result a {
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
