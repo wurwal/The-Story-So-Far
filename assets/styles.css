@@ -129,7 +129,7 @@ footer small {
      animation: marquee 120s linear infinite;
  }
  #marquee-content a {
-      font-size:1.8rem;
+      font-size:2.8rem;
      margin: 0 15px;
      text-decoration: none;
      color: #007bff;
@@ -140,6 +140,6 @@ footer small {
    border-bottom:1px solid #514544;
 }
  @keyframes marquee {
-     0% { transform: translateX(100%); }
-     100% { transform: translateX(-100%); }
+   0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
  }
