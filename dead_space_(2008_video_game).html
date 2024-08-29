@@ -46,7 +46,7 @@
             <main>
                 <h2 class="animate__fadeIn animate__animated"><i>A recap of...</i></h2>
                 <h1>Dead Space (2008 Video Game)</h1>
-                <div class="synopsis-content">Isaac arrives at Aegis VII on the Kellion with Kendra and Hammond. During the journey, Isaac has been repeatedly watching a video message from Nicole. A docking malfunction crashes the Kellion into the Ishimura's landing bay, and the ship's quarantine is broken. Necromorphs kill all the Kellion crew but Isaac, Kendra, and Hammond. Isaac navigates the ship, restoring systems and finding parts with which to repair the ship, so that they may escape. They almost succeed, but the Kellion is destroyed in a further malfunction. During these events, all three survivors begin experiencing escalating symptoms of psychosis and delirium, ranging from hallucinations to paranoia.<br><br>During his exploration, Isaac learns through audio and video logs about the ship's presence and Necromorph invasion. The Ishimura's illegal mining operation on Aegis VII, which was designated off-limits by the Earth Government, was meant to find the Red Marker for the Church of Unitology. The Aegis VII colony was almost wiped out by mass psychosis triggered by the Marker, causing killings and suicides. The Marker was brought aboard the Ishimura, along with survivors and bodies from the colony. A combination of the Marker's influence, factional fighting and the emerging Necromorph invasion resulted in the deaths of nearly everyone aboard. Isaac finds the two remaining survivors of the Ishimura crew: Dr. Terrence Kyne, who has abandoned his belief in Unitology, and Dr. Challus Mercer, who has gone insane and worships the Necromorphs.<br><br>Despite Isaac's efforts, Hammond is killed by a Necromorph, and Mercer allows himself to be transformed by them. Another ship, the Valor, arrives and is infected through an Ishimura escape pod containing a Necromorph; records show that the Valor was dispatched to remove all traces of the Ishimura's presence. Kendra kills Kyne before revealing her Earth Government allegiance, as the deranged Kyne threatened to return the Marker to the Necromorphs' controlling "Hive Mind" on the planet. The Marker was left on Aegis VII as part of an experiment, and Earth wants it retrieved. Reunited with Nicole, Isaac sabotages Kendra's attempt to escape the Ishimura, returns the Marker to Aegis VII, neutralising the Necromorphs and initiating Aegis VII's collapse.<br><br>Kendra retrieves the Marker and reveals to Isaac that his encounters with Nicole were hallucinations created by the Marker to return it to the Hive Mind. Nicole's message had ended with her committing suicide to avoid becoming a Necromorph. Kendra is killed by the awoken Hive Mind before she can escape with the Marker. After killing the Hive Mind, Isaac leaves on Kendra's shuttle as both Aegis VII and the Marker are destroyed. In the shuttle, a distraught Isaac mourns Nicole, and is attacked by a violent hallucination of her.</div>
+                <div class="synopsis-content animate__fadeIn animate__animated">Isaac arrives at Aegis VII on the Kellion with Kendra and Hammond. During the journey, Isaac has been repeatedly watching a video message from Nicole. A docking malfunction crashes the Kellion into the Ishimura's landing bay, and the ship's quarantine is broken. Necromorphs kill all the Kellion crew but Isaac, Kendra, and Hammond. Isaac navigates the ship, restoring systems and finding parts with which to repair the ship, so that they may escape. They almost succeed, but the Kellion is destroyed in a further malfunction. During these events, all three survivors begin experiencing escalating symptoms of psychosis and delirium, ranging from hallucinations to paranoia.<br><br>During his exploration, Isaac learns through audio and video logs about the ship's presence and Necromorph invasion. The Ishimura's illegal mining operation on Aegis VII, which was designated off-limits by the Earth Government, was meant to find the Red Marker for the Church of Unitology. The Aegis VII colony was almost wiped out by mass psychosis triggered by the Marker, causing killings and suicides. The Marker was brought aboard the Ishimura, along with survivors and bodies from the colony. A combination of the Marker's influence, factional fighting and the emerging Necromorph invasion resulted in the deaths of nearly everyone aboard. Isaac finds the two remaining survivors of the Ishimura crew: Dr. Terrence Kyne, who has abandoned his belief in Unitology, and Dr. Challus Mercer, who has gone insane and worships the Necromorphs.<br><br>Despite Isaac's efforts, Hammond is killed by a Necromorph, and Mercer allows himself to be transformed by them. Another ship, the Valor, arrives and is infected through an Ishimura escape pod containing a Necromorph; records show that the Valor was dispatched to remove all traces of the Ishimura's presence. Kendra kills Kyne before revealing her Earth Government allegiance, as the deranged Kyne threatened to return the Marker to the Necromorphs' controlling "Hive Mind" on the planet. The Marker was left on Aegis VII as part of an experiment, and Earth wants it retrieved. Reunited with Nicole, Isaac sabotages Kendra's attempt to escape the Ishimura, returns the Marker to Aegis VII, neutralising the Necromorphs and initiating Aegis VII's collapse.<br><br>Kendra retrieves the Marker and reveals to Isaac that his encounters with Nicole were hallucinations created by the Marker to return it to the Hive Mind. Nicole's message had ended with her committing suicide to avoid becoming a Necromorph. Kendra is killed by the awoken Hive Mind before she can escape with the Marker. After killing the Hive Mind, Isaac leaves on Kendra's shuttle as both Aegis VII and the Marker are destroyed. In the shuttle, a distraught Isaac mourns Nicole, and is attacked by a violent hallucination of her.</div>
                 <img class="mist animate__fadeInUp animate__animated animate__slower " src="assets/img/synopsis-mist.png"/>
 
             </main>
@@ -58,81 +58,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
 <script src="assets/search.js"></script>
-
- 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-<script>
-gsap.registerPlugin(ScrollTrigger);
-
-const splitTextToLines = (element) => {
-  const lines = [];
-  let currentLine = [];
-
-  // Splitting the text content into words
-  const words = element.textContent.split(/\s+/);
-
-  // Clear the original content
-  element.textContent = '';
-
-  // Temporary span to measure line positions
-  const tempSpan = document.createElement('span');
-  element.appendChild(tempSpan);
-
-  words.forEach((word, index) => {
-    // Create a span for each word
-    const wordSpan = document.createElement('span');
-    wordSpan.style.display = 'inline-block';
-    wordSpan.textContent = word + (index < words.length - 1 ? ' ' : '');
-    element.appendChild(wordSpan);
-
-    // Check if the word starts a new line
-    if (wordSpan.offsetTop > tempSpan.offsetTop) {
-      if (currentLine.length) {
-        lines.push(currentLine);
-      }
-      currentLine = [];
-    }
-    currentLine.push(wordSpan);
-    tempSpan.textContent = wordSpan.textContent;
-  });
-
-  // Push the last line
-  if (currentLine.length) {
-    lines.push(currentLine);
-  }
-
-  // Remove the temporary span
-  element.removeChild(tempSpan);
-
-  return lines;
-};
-
-const animateLines = (element) => {
-  const lines = splitTextToLines(element);
-
-  lines.forEach((line, i) => {
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: element,
-        start: "top 90%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    timeline.fromTo(line, 
-      { x: -100, opacity: 0 }, 
-      { x: 0, opacity: 1, duration: 1, ease: "power2.out", stagger: 0.05 }
-    );
-  });
-};
-
-document.addEventListener("DOMContentLoaded", function() {
-  animateLines(document.querySelector(".synopsis-content"));
-});
-
-</script>
                 <small>This article uses material from the Wikipedia article - "Alien  Isolation", which is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-Share-Alike License 4.0</a></small>
             </footer>
             </div>

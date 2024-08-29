@@ -64,9 +64,7 @@ footer small {
 /*synopsis content*/
 
 .synopsis-content {
-  overflow: hidden;
-  white-space: nowrap;
-  opacity: 0;
+
 }
 
 .synopsis-content, main {

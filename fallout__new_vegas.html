@@ -46,7 +46,7 @@
             <main>
                 <h2 class="animate__fadeIn animate__animated"><i>A recap of...</i></h2>
                 <h1>Fallout  New Vegas</h1>
-                <div class="synopsis-content">Fallout: New Vegas takes place in the year 2281, 204 years after a devastating nuclear war between the United States and China, known as the Great War. Three major entities seek control of the Mojave Desert, known in-game as the Mojave Wasteland: The New California Republic (NCR), a democratic republic that attempts to maintain law; Caesar's Legion, a violent tribal army inspired by the Roman legion; and Mr. House, a mysterious businessman from New Vegas who controls an army of robots called securitrons. As part of an eastward expansion from California, the NCR took control of the Hoover Dam, which provides electricity to the surrounding area. Caesar's Legion and Mr. House each want to control the Hoover Dam for themselves and advance their own plans for the region. Along with the three main factions, minor ones include; the Boomers, a heavily armed xenophobic tribe at Nellis Air Force Base; the Powder Gangers, escaped convicts from a correctional facility; the Great Khans, a tribe of drug dealers; and the Brotherhood of Steel, a militant organization who aim to secure old technology.: 43<br><br>While delivering a poker chip-shaped data storage device known as the Platinum Chip to New Vegas, the courier is ambushed by mobster and casino owner Benny, who steals the Platinum Chip and shoots them. Left for dead, the courier is dug out of a shallow grave by a securitron named Victor and nursed back to health by physician Doc Mitchell. The courier then departs on the search of Benny and the Platinum Chip. In the casino on the New Vegas strip, the courier confronts Benny, where they choose to either kill him and recover the Platinum Chip or let him escape.<br><br>The courier becomes embroiled in a conflict between the NCR, Caesar's Legion, and Mr. House for control of the region. It is revealed that Mr. House survived the war between the United States and China in a life-support chamber. He created the Platinum Chip, which contains a program capable of upgrading his securitron army; the device was initially meant to protect Las Vegas during the Great War, but the war began before the Chip could be delivered. After the Platinum Chip was located, the courier was tasked with delivering it to Mr. House. Benny stole the Platinum Chip as part of his plan to usurp Mr. House with the assistance of a reprogrammed securitron called Yes Man.<br><br>Hoover Dam becomes the center of the conflict between the NCR and Caesar's Legion. The player can choose which faction to support, which results in one of four endings. If the player supports the NCR, they successfully repel the Legion's attack at Hoover Dam and annex the Mojave Wasteland. If the player supports Caesar's Legion, they force the NCR to retreat, and conquer the Mojave Wasteland. Mr. House wants to have sole control of New Vegas, and if the player supports him, the overwhelming securitron army forces both factions to leave the area. Alternatively, if the player wishes for the Mojave Wasteland to remain independent of leadership, they can take control of Mr. House's securitron network with the help of Yes Man.</div>
+                <div class="synopsis-content animate__fadeIn animate__animated">Fallout: New Vegas takes place in the year 2281, 204 years after a devastating nuclear war between the United States and China, known as the Great War. Three major entities seek control of the Mojave Desert, known in-game as the Mojave Wasteland: The New California Republic (NCR), a democratic republic that attempts to maintain law; Caesar's Legion, a violent tribal army inspired by the Roman legion; and Mr. House, a mysterious businessman from New Vegas who controls an army of robots called securitrons. As part of an eastward expansion from California, the NCR took control of the Hoover Dam, which provides electricity to the surrounding area. Caesar's Legion and Mr. House each want to control the Hoover Dam for themselves and advance their own plans for the region. Along with the three main factions, minor ones include; the Boomers, a heavily armed xenophobic tribe at Nellis Air Force Base; the Powder Gangers, escaped convicts from a correctional facility; the Great Khans, a tribe of drug dealers; and the Brotherhood of Steel, a militant organization who aim to secure old technology.: 43<br><br>While delivering a poker chip-shaped data storage device known as the Platinum Chip to New Vegas, the courier is ambushed by mobster and casino owner Benny, who steals the Platinum Chip and shoots them. Left for dead, the courier is dug out of a shallow grave by a securitron named Victor and nursed back to health by physician Doc Mitchell. The courier then departs on the search of Benny and the Platinum Chip. In the casino on the New Vegas strip, the courier confronts Benny, where they choose to either kill him and recover the Platinum Chip or let him escape.<br><br>The courier becomes embroiled in a conflict between the NCR, Caesar's Legion, and Mr. House for control of the region. It is revealed that Mr. House survived the war between the United States and China in a life-support chamber. He created the Platinum Chip, which contains a program capable of upgrading his securitron army; the device was initially meant to protect Las Vegas during the Great War, but the war began before the Chip could be delivered. After the Platinum Chip was located, the courier was tasked with delivering it to Mr. House. Benny stole the Platinum Chip as part of his plan to usurp Mr. House with the assistance of a reprogrammed securitron called Yes Man.<br><br>Hoover Dam becomes the center of the conflict between the NCR and Caesar's Legion. The player can choose which faction to support, which results in one of four endings. If the player supports the NCR, they successfully repel the Legion's attack at Hoover Dam and annex the Mojave Wasteland. If the player supports Caesar's Legion, they force the NCR to retreat, and conquer the Mojave Wasteland. Mr. House wants to have sole control of New Vegas, and if the player supports him, the overwhelming securitron army forces both factions to leave the area. Alternatively, if the player wishes for the Mojave Wasteland to remain independent of leadership, they can take control of Mr. House's securitron network with the help of Yes Man.</div>
                 <img class="mist animate__fadeInUp animate__animated animate__slower " src="assets/img/synopsis-mist.png"/>
 
             </main>
@@ -58,81 +58,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
 <script src="assets/search.js"></script>
-
- 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-<script>
-gsap.registerPlugin(ScrollTrigger);
-
-const splitTextToLines = (element) => {
-  const lines = [];
-  let currentLine = [];
-
-  // Splitting the text content into words
-  const words = element.textContent.split(/\s+/);
-
-  // Clear the original content
-  element.textContent = '';
-
-  // Temporary span to measure line positions
-  const tempSpan = document.createElement('span');
-  element.appendChild(tempSpan);
-
-  words.forEach((word, index) => {
-    // Create a span for each word
-    const wordSpan = document.createElement('span');
-    wordSpan.style.display = 'inline-block';
-    wordSpan.textContent = word + (index < words.length - 1 ? ' ' : '');
-    element.appendChild(wordSpan);
-
-    // Check if the word starts a new line
-    if (wordSpan.offsetTop > tempSpan.offsetTop) {
-      if (currentLine.length) {
-        lines.push(currentLine);
-      }
-      currentLine = [];
-    }
-    currentLine.push(wordSpan);
-    tempSpan.textContent = wordSpan.textContent;
-  });
-
-  // Push the last line
-  if (currentLine.length) {
-    lines.push(currentLine);
-  }
-
-  // Remove the temporary span
-  element.removeChild(tempSpan);
-
-  return lines;
-};
-
-const animateLines = (element) => {
-  const lines = splitTextToLines(element);
-
-  lines.forEach((line, i) => {
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: element,
-        start: "top 90%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    timeline.fromTo(line, 
-      { x: -100, opacity: 0 }, 
-      { x: 0, opacity: 1, duration: 1, ease: "power2.out", stagger: 0.05 }
-    );
-  });
-};
-
-document.addEventListener("DOMContentLoaded", function() {
-  animateLines(document.querySelector(".synopsis-content"));
-});
-
-</script>
                 <small>This article uses material from the Wikipedia article - "Alien  Isolation", which is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-Share-Alike License 4.0</a></small>
             </footer>
             </div>
