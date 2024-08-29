@@ -7,6 +7,10 @@ body {
   background:#f6f5f3 !important;
 }
 
+.primary {
+  color:#f88379;
+}
+
 a, a:hover {
   transition: all 0.7s;
     -moz-transition: all 0.7s;
@@ -31,7 +35,7 @@ b, strong {
 
 
 .logo {
-   max-width:356px;
+   max-width:256px;
    margin:20px auto 2rem 0;
    mix-blend-mode: luminosity;
 }
