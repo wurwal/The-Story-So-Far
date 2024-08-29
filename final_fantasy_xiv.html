@@ -11,9 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
- 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
 
   
      <script data-goatcounter="https://tssf.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -53,7 +51,7 @@
 
             </main>
             <footer>
-                <div id="end" class="footer-top text-center">
+                <div class="footer-top text-center">
 <p>A web app by Thomas Wurwal</p>
 </div>
 
@@ -61,28 +59,52 @@
 
 <script src="assets/search.js"></script>
 
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
 const splitTextToLines = (element) => {
   const lines = [];
-  const words = element.innerHTML.split(/\s+/);
-  
-  element.innerHTML = '';
+  let currentLine = [];
+
+  // Splitting the text content into words
+  const words = element.textContent.split(/\s+/);
+
+  // Clear the original content
+  element.textContent = '';
+
+  // Temporary span to measure line positions
+  const tempSpan = document.createElement('span');
+  element.appendChild(tempSpan);
 
   words.forEach((word, index) => {
-    const span = document.createElement('span');
-    span.style.display = 'inline-block';
-    span.textContent = word + (index < words.length - 1 ? ' ' : '');
-    element.appendChild(span);
+    // Create a span for each word
+    const wordSpan = document.createElement('span');
+    wordSpan.style.display = 'inline-block';
+    wordSpan.textContent = word + (index < words.length - 1 ? ' ' : '');
+    element.appendChild(wordSpan);
 
-    // Check if we need to start a new line
-    if (span.offsetTop > (lines[lines.length - 1]?.offsetTop || 0)) {
-      lines.push([]);
+    // Check if the word starts a new line
+    if (wordSpan.offsetTop > tempSpan.offsetTop) {
+      if (currentLine.length) {
+        lines.push(currentLine);
+      }
+      currentLine = [];
     }
-    lines[lines.length - 1].push(span);
+    currentLine.push(wordSpan);
+    tempSpan.textContent = wordSpan.textContent;
   });
+
+  // Push the last line
+  if (currentLine.length) {
+    lines.push(currentLine);
+  }
+
+  // Remove the temporary span
+  element.removeChild(tempSpan);
 
   return lines;
 };
@@ -107,7 +129,7 @@ const animateLines = (element) => {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
-  animateLines(document.querySelector(".synopsis-content"));
+  animateLines(document.querySelector(".synopsis"));
 });
 
 </script>
