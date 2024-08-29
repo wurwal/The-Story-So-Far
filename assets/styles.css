@@ -36,7 +36,7 @@ b, strong {
 
 .logo {
    max-width:256px;
-   margin:20px auto 2rem 0;
+   margin:20px auto 20px 0;
    mix-blend-mode: luminosity;
 }
 
@@ -62,6 +62,12 @@ footer small {
 }
 
 /*synopsis content*/
+
+.synopsis-content {
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+}
 
 .synopsis-content, main {
   text-align:center !important;

@@ -11,6 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
   
      <script data-goatcounter="https://tssf.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
  
@@ -44,7 +48,7 @@
             <main>
                 <h2 class="animate__fadeIn animate__animated"><i>A recap of...</i></h2>
                 <h1>Silent Hill 2</h1>
-                <div class="synopsis-content animate__fadeIn animate__animated animate__slower">While not focusing on the characters and plot threads of the first Silent Hill game, Silent Hill 2 takes place in the series' namesake town, located in Maine. Silent Hill 2 is set in another area of the town, and explores some of Silent Hill's backstory. As opposed to the first game where the monsters and environments were a real manifestation, and everybody could see what was happening, this time the town draws upon the psyche of its visitors and ultimately forms alternative versions of itself, which differs depending on the character; thus, Silent Hill 2 acts as more of an internal representation of a person's guilt or demons.[c] The concept behind the town was "a small, rural town in America"; to make the setting more realistic, some buildings and rooms lack furnishings.</div>
+                <div class="synopsis-content">While not focusing on the characters and plot threads of the first Silent Hill game, Silent Hill 2 takes place in the series' namesake town, located in Maine. Silent Hill 2 is set in another area of the town, and explores some of Silent Hill's backstory. As opposed to the first game where the monsters and environments were a real manifestation, and everybody could see what was happening, this time the town draws upon the psyche of its visitors and ultimately forms alternative versions of itself, which differs depending on the character; thus, Silent Hill 2 acts as more of an internal representation of a person's guilt or demons.[c] The concept behind the town was "a small, rural town in America"; to make the setting more realistic, some buildings and rooms lack furnishings.</div>
                 <img class="mist animate__fadeInUp animate__animated animate__slower " src="assets/img/synopsis-mist.png"/>
 
             </main>
@@ -58,6 +62,27 @@
 <script src="assets/search.js"></script>
 
 
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.utils.toArray('.synopsis div').forEach((line, i) => {
+  gsap.fromTo(line, 
+    { x: -100, opacity: 0 }, 
+    {
+      x: 0, 
+      opacity: 1,
+      duration: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: line,
+        start: "top 90%",  // Trigger when the line reaches 90% of the viewport height
+        toggleActions: "play none none reverse",  // Play on enter, reverse on leave
+        delay: i * 0.1  // Slight delay for each line to create a staggered effect
+      }
+    }
+  );
+});
+</script>
                 <small>This article uses material from the Wikipedia article - "Alien  Isolation", which is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-Share-Alike License 4.0</a></small>
             </footer>
             </div>

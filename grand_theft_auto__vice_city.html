@@ -11,6 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
   
      <script data-goatcounter="https://tssf.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
  
@@ -44,7 +48,7 @@
             <main>
                 <h2 class="animate__fadeIn animate__animated"><i>A recap of...</i></h2>
                 <h1>Grand Theft Auto  Vice City</h1>
-                <div class="synopsis-content animate__fadeIn animate__animated animate__slower">In 1986, mobster Tommy Vercetti (voiced by Ray Liotta) is released from prison after serving a fifteen-year sentence for murder. His boss Sonny Forelli (Tom Sizemore), seeking to establish drug operations in the South, sends Tommy to Vice City to oversee an important drug deal alongside crooked lawyer Ken Rosenberg (William Fichtner). However, the deal is ambushed by unknown assailants, with Tommy and Ken barely escaping. Angered upon hearing the news, Sonny orders Tommy to recover the drugs, alongside the money Sonny gave to him, under threat of consequences. Seeking information, Ken points Tommy towards retired army colonel Juan Garcia Cortez (Robert Davi), who helped set up the exchange. Expressing regret for the ambush, Cortez promises to find out who masterminded it.<br><br>While investigating, Tommy meets with several people who offer him help: music director Kent Paul (Danny Dyer), who maintains connections with the city's criminal underworld; Lance Vance (Philip Michael Thomas), who aided in the deal and lost his brother in the ambush; Texan business tycoon Avery Carrington (Burt Reynolds), who in return enlists Tommy's help with several deals; and drug kingpin Ricardo Diaz (Luis Guzmán), who employs both Tommy and Lance. Eventually, Cortez begins voicing his suspicions that Diaz organised the ambush. Upon further investigation, Lance discovers this to be true and, against Tommy's advice, tries to kill Diaz, only to get himself captured. After Tommy saves Lance, they kill Diaz.<br><br>With Diaz dead, Tommy takes over his assets and, at Avery's suggestion, works to expand his new criminal empire by forcing businesses to pay him protection money and buying out nearly bankrupt companies to use as fronts for illicit operations. Tommy establishes his own gang to protect his businesses from rivals, and provides assistance to several prominent gang leaders in the hopes they will support his expansion. He helps Cortez flee the city with stolen military equipment. Eventually, Sonny discovers that Tommy has gained complete control over Vice City's drug trade without cutting the Forellis in. Enraged at his independence, Sonny sends mobsters to forcefully collect money from Tommy's businesses. In response, Tommy kills Sonny's men and cuts ties with him.<br><br>Later, learning Sonny is personally coming to Vice City to collect what he believes he is owed, Tommy prepares to pay him tribute with counterfeit money. However, Sonny reveals that he was responsible for Tommy's arrest fifteen years prior, and that Lance has betrayed Tommy and allied himself with the Forellis, having felt inadequate in Tommy's presence since his rise to power. A shootout ensues in Tommy's mansion, during which Tommy prevents the Forellis from stealing his money and kills Lance for his betrayal, before finally killing Sonny. When Ken arrives to a scene of carnage, Tommy quickly reassures him that everything is now fine, as he has finally established himself as the undisputed crime kingpin of Vice City.</div>
+                <div class="synopsis-content">In 1986, mobster Tommy Vercetti (voiced by Ray Liotta) is released from prison after serving a fifteen-year sentence for murder. His boss Sonny Forelli (Tom Sizemore), seeking to establish drug operations in the South, sends Tommy to Vice City to oversee an important drug deal alongside crooked lawyer Ken Rosenberg (William Fichtner). However, the deal is ambushed by unknown assailants, with Tommy and Ken barely escaping. Angered upon hearing the news, Sonny orders Tommy to recover the drugs, alongside the money Sonny gave to him, under threat of consequences. Seeking information, Ken points Tommy towards retired army colonel Juan Garcia Cortez (Robert Davi), who helped set up the exchange. Expressing regret for the ambush, Cortez promises to find out who masterminded it.<br><br>While investigating, Tommy meets with several people who offer him help: music director Kent Paul (Danny Dyer), who maintains connections with the city's criminal underworld; Lance Vance (Philip Michael Thomas), who aided in the deal and lost his brother in the ambush; Texan business tycoon Avery Carrington (Burt Reynolds), who in return enlists Tommy's help with several deals; and drug kingpin Ricardo Diaz (Luis Guzmán), who employs both Tommy and Lance. Eventually, Cortez begins voicing his suspicions that Diaz organised the ambush. Upon further investigation, Lance discovers this to be true and, against Tommy's advice, tries to kill Diaz, only to get himself captured. After Tommy saves Lance, they kill Diaz.<br><br>With Diaz dead, Tommy takes over his assets and, at Avery's suggestion, works to expand his new criminal empire by forcing businesses to pay him protection money and buying out nearly bankrupt companies to use as fronts for illicit operations. Tommy establishes his own gang to protect his businesses from rivals, and provides assistance to several prominent gang leaders in the hopes they will support his expansion. He helps Cortez flee the city with stolen military equipment. Eventually, Sonny discovers that Tommy has gained complete control over Vice City's drug trade without cutting the Forellis in. Enraged at his independence, Sonny sends mobsters to forcefully collect money from Tommy's businesses. In response, Tommy kills Sonny's men and cuts ties with him.<br><br>Later, learning Sonny is personally coming to Vice City to collect what he believes he is owed, Tommy prepares to pay him tribute with counterfeit money. However, Sonny reveals that he was responsible for Tommy's arrest fifteen years prior, and that Lance has betrayed Tommy and allied himself with the Forellis, having felt inadequate in Tommy's presence since his rise to power. A shootout ensues in Tommy's mansion, during which Tommy prevents the Forellis from stealing his money and kills Lance for his betrayal, before finally killing Sonny. When Ken arrives to a scene of carnage, Tommy quickly reassures him that everything is now fine, as he has finally established himself as the undisputed crime kingpin of Vice City.</div>
                 <img class="mist animate__fadeInUp animate__animated animate__slower " src="assets/img/synopsis-mist.png"/>
 
             </main>
@@ -58,6 +62,27 @@
 <script src="assets/search.js"></script>
 
 
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.utils.toArray('.synopsis div').forEach((line, i) => {
+  gsap.fromTo(line, 
+    { x: -100, opacity: 0 }, 
+    {
+      x: 0, 
+      opacity: 1,
+      duration: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: line,
+        start: "top 90%",  // Trigger when the line reaches 90% of the viewport height
+        toggleActions: "play none none reverse",  // Play on enter, reverse on leave
+        delay: i * 0.1  // Slight delay for each line to create a staggered effect
+      }
+    }
+  );
+});
+</script>
                 <small>This article uses material from the Wikipedia article - "Alien  Isolation", which is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-Share-Alike License 4.0</a></small>
             </footer>
             </div>

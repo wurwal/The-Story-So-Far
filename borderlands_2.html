@@ -11,6 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
   
      <script data-goatcounter="https://tssf.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
  
@@ -44,7 +48,7 @@
             <main>
                 <h2 class="animate__fadeIn animate__animated"><i>A recap of...</i></h2>
                 <h1>Borderlands 2</h1>
-                <div class="synopsis-content animate__fadeIn animate__animated animate__slower">The game opens with the Vault Hunters aboard a Hyperion train on Pandora. Their employer, Handsome Jack, suddenly sabotages the train and leaves the Vault Hunters for dead in a frozen wasteland. The Vault Hunters are found by the last remaining CL4P-TP ("Claptrap") unit. The Guardian Angel contacts the Vault Hunters and instructs them to accompany Claptrap to the city of Sanctuary, and to join the Crimson Raiders, an anti-Hyperion resistance movement, in order to defeat Handsome Jack.<br><br>Upon arriving at Sanctuary, the Vault Hunters are asked to rescue Roland, leader of the Crimson Raiders, who has been captured by a bounty hunter called the Firehawk. The Vault Hunters meet the Firehawk, who turns out to be Lilith, whose Siren powers have been enhanced by the new supply of Eridium. Lilith informs the Vault Hunters that Roland was actually captured by a group of bandits. After fighting through the bandits' territory, the Vault Hunters rescue Roland and return to Sanctuary.<br><br>Roland and Lilith learn that the Vault Key stolen from Tannis is being transported aboard a Hyperion train, and ask the Vault Hunters to retrieve it. The Vault Hunters derail the train, but instead of finding the Vault Key they encounter Wilhelm, a Hyperion cyborg and one of Handsome Jack's enforcers. The Vault Hunters kill Wilhelm and recover his power core, which Roland recommends be used as the power source for Sanctuary's shields. The power core turns out to be a trap; it allows the Guardian Angel, who is revealed to be working for Jack, to lower the city's shields, leaving it vulnerable to an orbital bombardment. Lilith saves Sanctuary, which was originally a large spacecraft, by activating its engines and teleporting it away.<br><br>Handsome Jack's plan is to open Pandora's second Vault and unleash the "Warrior", a powerful Eridian monster controlled by whoever releases it; as the Vault Key only charges itself every 200 years, he is using Eridium to forcefully charge it. Angel communicates with the group in Sanctuary, and divulges that the Vault Key is kept with her in a heavily guarded Hyperion facility. The Vault Hunters prepare an attack on the facility, enlisting former Vault Hunters Brick and Mordecai. Roland and the Vault Hunters assault the Hyperion compound and meet Angel, who is a Siren and Jack's daughter. She reveals Jack is using her to charge the Vault Key, and requests to be killed in order to stop her father. Against Jack's efforts to defend her, Roland, Lilith, and the Vault Hunters destroy Angel's life support, killing her. An enraged Jack kills Roland and captures Lilith, forcing her to obey him, as he had done to Angel. Before Jack can make Lilith kill the Vault Hunters, she teleports them back to Sanctuary. Jack then uses her to continue charging the Vault Key in Angel's place.<br><br>While Mordecai and Brick prepare an attack on the Vault, the Vault Hunters travel to the Hyperion Information Annex and obtain the Vault's location. After mounting an attack, the Vault Hunters find and defeat Jack, but fail to prevent him from opening the Vault and unleashing the Warrior. The Vault Hunters manage to kill it, and, depending on player choice, either execute Jack or let Lilith do it. As Lilith then attempts to destroy the Vault Key, she accidentally activates an information bank which contains a map of the galaxy, indicating the locations of several Vaults. Lilith remarks that "there ain't no rest for the wicked" before the screen cuts to black. During the credits, various scenes are shown of the Pandorans celebrating Handsome Jack's defeat and taking back their planet from the remaining Hyperion forces.</div>
+                <div class="synopsis-content">The game opens with the Vault Hunters aboard a Hyperion train on Pandora. Their employer, Handsome Jack, suddenly sabotages the train and leaves the Vault Hunters for dead in a frozen wasteland. The Vault Hunters are found by the last remaining CL4P-TP ("Claptrap") unit. The Guardian Angel contacts the Vault Hunters and instructs them to accompany Claptrap to the city of Sanctuary, and to join the Crimson Raiders, an anti-Hyperion resistance movement, in order to defeat Handsome Jack.<br><br>Upon arriving at Sanctuary, the Vault Hunters are asked to rescue Roland, leader of the Crimson Raiders, who has been captured by a bounty hunter called the Firehawk. The Vault Hunters meet the Firehawk, who turns out to be Lilith, whose Siren powers have been enhanced by the new supply of Eridium. Lilith informs the Vault Hunters that Roland was actually captured by a group of bandits. After fighting through the bandits' territory, the Vault Hunters rescue Roland and return to Sanctuary.<br><br>Roland and Lilith learn that the Vault Key stolen from Tannis is being transported aboard a Hyperion train, and ask the Vault Hunters to retrieve it. The Vault Hunters derail the train, but instead of finding the Vault Key they encounter Wilhelm, a Hyperion cyborg and one of Handsome Jack's enforcers. The Vault Hunters kill Wilhelm and recover his power core, which Roland recommends be used as the power source for Sanctuary's shields. The power core turns out to be a trap; it allows the Guardian Angel, who is revealed to be working for Jack, to lower the city's shields, leaving it vulnerable to an orbital bombardment. Lilith saves Sanctuary, which was originally a large spacecraft, by activating its engines and teleporting it away.<br><br>Handsome Jack's plan is to open Pandora's second Vault and unleash the "Warrior", a powerful Eridian monster controlled by whoever releases it; as the Vault Key only charges itself every 200 years, he is using Eridium to forcefully charge it. Angel communicates with the group in Sanctuary, and divulges that the Vault Key is kept with her in a heavily guarded Hyperion facility. The Vault Hunters prepare an attack on the facility, enlisting former Vault Hunters Brick and Mordecai. Roland and the Vault Hunters assault the Hyperion compound and meet Angel, who is a Siren and Jack's daughter. She reveals Jack is using her to charge the Vault Key, and requests to be killed in order to stop her father. Against Jack's efforts to defend her, Roland, Lilith, and the Vault Hunters destroy Angel's life support, killing her. An enraged Jack kills Roland and captures Lilith, forcing her to obey him, as he had done to Angel. Before Jack can make Lilith kill the Vault Hunters, she teleports them back to Sanctuary. Jack then uses her to continue charging the Vault Key in Angel's place.<br><br>While Mordecai and Brick prepare an attack on the Vault, the Vault Hunters travel to the Hyperion Information Annex and obtain the Vault's location. After mounting an attack, the Vault Hunters find and defeat Jack, but fail to prevent him from opening the Vault and unleashing the Warrior. The Vault Hunters manage to kill it, and, depending on player choice, either execute Jack or let Lilith do it. As Lilith then attempts to destroy the Vault Key, she accidentally activates an information bank which contains a map of the galaxy, indicating the locations of several Vaults. Lilith remarks that "there ain't no rest for the wicked" before the screen cuts to black. During the credits, various scenes are shown of the Pandorans celebrating Handsome Jack's defeat and taking back their planet from the remaining Hyperion forces.</div>
                 <img class="mist animate__fadeInUp animate__animated animate__slower " src="assets/img/synopsis-mist.png"/>
 
             </main>
@@ -58,6 +62,27 @@
 <script src="assets/search.js"></script>
 
 
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.utils.toArray('.synopsis div').forEach((line, i) => {
+  gsap.fromTo(line, 
+    { x: -100, opacity: 0 }, 
+    {
+      x: 0, 
+      opacity: 1,
+      duration: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: line,
+        start: "top 90%",  // Trigger when the line reaches 90% of the viewport height
+        toggleActions: "play none none reverse",  // Play on enter, reverse on leave
+        delay: i * 0.1  // Slight delay for each line to create a staggered effect
+      }
+    }
+  );
+});
+</script>
                 <small>This article uses material from the Wikipedia article - "Alien  Isolation", which is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-Share-Alike License 4.0</a></small>
             </footer>
             </div>
