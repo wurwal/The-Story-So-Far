@@ -12,7 +12,7 @@
                 document.execCommand("copy");
                 tempInput.remove(); // Clean up
                 
-                alert("Shortened URL copied to clipboard: " + shortenedURL);
+                alert("URL copied!");
             });
         });
         
