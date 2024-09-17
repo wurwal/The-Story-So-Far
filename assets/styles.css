@@ -76,8 +76,16 @@ footer small {
 }
 
 #copyLink {
-    padding:20px 0;
-    display:block;
+    padding: 20px 0;
+    display: block;
+    text-decoration: none;
+    font-size: 21px;
+    color: #f88379 !important;
+}
+
+#copyLink svg {
+    height:24px;
+    width:24px;
 }
 
 
