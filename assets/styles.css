@@ -79,7 +79,15 @@ footer small {
     padding: 20px 0;
     display: block;
     text-decoration: none;
-    font-size: 21px;
+    font-size: 18px;
+    color: #f88379 !important;
+}
+
+#copyLink:hover {
+    padding: 20px 0;
+    display: block;
+    text-decoration: none;
+    font-size: 18px;
     color: #f88379 !important;
 }
 
