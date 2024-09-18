@@ -120,6 +120,17 @@ footer small {
   height: 65vh;
 }
 
+.blur-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 33.33vh; /* 1/3 of the viewport height */
+  backdrop-filter: blur(10px); /* Adjust the blur intensity */
+  z-index: 10;
+  pointer-events: none; /* Ensures you can still click through the blurred area */
+}
+
 /* search engine */
 
 .search {
