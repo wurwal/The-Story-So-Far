@@ -1,1 +1,1 @@
-/* https://story-so-far.net/:splat 301
+/* https://story-so-far.net/:splat 301!condition=request.host != "story-so-far.net"
