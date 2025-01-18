@@ -1003,6 +1003,36 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://story-so-far.net/dead_rising_3</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://story-so-far.net/dead_rising_4</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://story-so-far.net/dead_rising_(video_game)</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://story-so-far.net/dead_rising_2</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://story-so-far.net/crackdown_(video_game)</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://story-so-far.net/final_fantasy_v-</loc>
     <lastmod>2024-09-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -1129,12 +1159,6 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://story-so-far.net/crackdown_(video_game)</loc>
-    <lastmod>2025-01-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://story-so-far.net/crackdown_2</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -1148,30 +1172,6 @@
   </url>
   <url>
     <loc>https://story-so-far.net/crayon_shin-chan</loc>
-    <lastmod>2025-01-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://story-so-far.net/dead_rising_(video_game)</loc>
-    <lastmod>2025-01-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://story-so-far.net/dead_rising_2</loc>
-    <lastmod>2025-01-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://story-so-far.net/dead_rising_3</loc>
-    <lastmod>2025-01-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://story-so-far.net/dead_rising_4</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -1472,6 +1472,12 @@
   </url>
   <url>
     <loc>https://story-so-far.net/star_wars_jedi__fallen_order</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://story-so-far.net/stranger_of_paradise__final_fantasy_origin</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
