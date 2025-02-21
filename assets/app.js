@@ -32,7 +32,7 @@
                 }
 
                 // Select 20 random links
-                const randomLinks = shuffleArray(data).slice(0, 20);
+                const randomLinks = shuffleArray(data).slice(0, 250);
 
                 // Create the marquee content
                 let marqueeContent = '';
