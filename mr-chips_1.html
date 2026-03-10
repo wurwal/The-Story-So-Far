@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Chips Loves Chips!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a0a2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+  }
+
+  #game-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.4rem;
+    color: #ffe066;
+    text-shadow: 3px 3px 0 #e07b00, 6px 6px 0 #7a3a00;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  #game-canvas {
+    border: 4px solid #ffe066;
+    border-radius: 4px;
+    box-shadow: 0 0 40px #ff9900aa, 0 0 80px #ff660044;
+    display: block;
+    background: #0d1b2a;
+    cursor: none;
+  }
+
+  #hud {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 16px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .hud-label {
+    font-size: 8px;
+    color: #aaa;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .hud-value {
+    font-size: 13px;
+    color: #ffe066;
+    text-shadow: 0 0 8px #ffaa00;
+  }
+
+  #controls-hint {
+    margin-top: 10px;
+    font-size: 7px;
+    color: #6688aa;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div id="game-wrapper">
+  <h1>🥔 Mr. Chips Loves Chips! 🥔</h1>
+  <div style="position:relative;">
+    <canvas id="game-canvas" width="520" height="560"></canvas>
+    <div id="hud">
+      <div>
+        <span class="hud-label">LEVEL</span>
+        <span class="hud-value" id="hud-level">1</span>
+      </div>
+      <div style="text-align:center;">
+        <span class="hud-label">LIFE EXPECTANCY</span>
+        <span class="hud-value" id="hud-life" style="color:#66ff99;">100%</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="hud-label">CHIPS CAUGHT</span>
+        <span class="hud-value" id="hud-score">0</span>
+      </div>
+    </div>
+  </div>
+  <div id="controls-hint">← → ARROW KEYS or A/D to move &nbsp;|&nbsp; SPACE to start</div>
+</div>
+
+<script>
+// ── Stars background ──────────────────────────────────────────────────
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const sz = Math.random() * 2.5 + 0.5;
+  s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1.5+Math.random()*2}s`;
+  starsEl.appendChild(s);
+}
+
+// ── Canvas setup ──────────────────────────────────────────────────────
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const scoreEl = document.getElementById('hud-score');
+const levelEl = document.getElementById('hud-level');
+const lifeEl  = document.getElementById('hud-life');
+let lifeExpectancy = 100;
+
+// ── Game state ────────────────────────────────────────────────────────
+let state = 'title'; // title | playing | gameover
+let score = 0;
+let lives = 3;
+let level = 1;
+let frameCount = 0;
+let chips = [];
+let particles = [];
+let bobble = 0;
+let shakeFrames = 0;
+
+// ── Speech bubble ─────────────────────────────────────────────────────
+const QUOTES = [
+  "I bluddy luv chips me",
+  "robins the name, chips is the game",
+  "pure white chips",
+  "I can charge £9 for this chip",
+  "add more grease",
+  "my blood pressure is through the bluddy roof",
+];
+let bubble = null; // { text, life, maxLife }
+
+function showBubble(text) {
+  bubble = { text, life: 180, maxLife: 180 };
+}
+
+// ── Player ────────────────────────────────────────────────────────────
+const PLAYER_W = 62, PLAYER_H = 80;
+const player = {
+  x: W / 2,
+  y: H - 70,
+  speed: 5.5,
+  vx: 0,
+};
+
+// ── Input ─────────────────────────────────────────────────────────────
+const keys = {};
+window.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if ((e.code === 'Space') && state !== 'playing') startGame();
+});
+window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// ── Chip types (french fry varieties!) ───────────────────────────────
+const CHIP_TYPES = [
+  { color: '#f9c74f', shadow: '#c87d00', points: 1 },   // golden
+  { color: '#e8a838', shadow: '#a05c00', points: 1 },   // darker golden
+  { color: '#f5d98b', shadow: '#d4920a', points: 2 },   // pale crispy
+  { color: '#e07b2a', shadow: '#8b3e00', points: 3 },   // extra crispy
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────
+function rand(a, b) { return a + Math.random() * (b - a); }
+function randInt(a, b) { return Math.floor(rand(a, b + 1)); }
+
+function spawnChip() {
+  const type = CHIP_TYPES[randInt(0, CHIP_TYPES.length - 1)];
+  const baseSpeed = 1.8 + level * 0.35;
+  chips.push({
+    x: rand(28, W - 28),
+    y: -30,
+    r: rand(14, 20),          // controls fry length (r * 2.8)
+    vy: rand(baseSpeed, baseSpeed + 1.4),
+    vx: rand(-0.5, 0.5),
+    rot: rand(-0.35, 0.35),   // mostly upright, slight tilt
+    rotV: rand(-0.018, 0.018),
+    type,
+    wobble: rand(0, Math.PI * 2),
+  });
+}
+
+// ── Special items ─────────────────────────────────────────────────────
+let specials = [];
+
+function spawnSpecial() {
+  const kind = Math.random() < 0.5 ? 'unionjack' : 'bowtie';
+  const baseSpeed = 1.2 + level * 0.2;
+  specials.push({
+    x: rand(36, W - 36),
+    y: -40,
+    vy: rand(baseSpeed, baseSpeed + 0.8),
+    vx: rand(-0.4, 0.4),
+    rot: rand(-0.2, 0.2),
+    rotV: rand(-0.012, 0.012),
+    kind,
+    points: kind === 'unionjack' ? 10 : 7,
+    glow: 0,
+  });
+}
+
+function spawnParticles(x, y, color) {
+  for (let i = 0; i < 12; i++) {
+    const angle = rand(0, Math.PI * 2);
+    const speed = rand(1.5, 5);
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: rand(3, 7),
+      color,
+      life: 1,
+      decay: rand(0.04, 0.08),
+    });
+  }
+}
+
+function startGame() {
+  score = 0;
+  lives = 3;
+  level = 1;
+  lifeExpectancy = 100;
+  chips = [];
+  particles = [];
+  specials = [];
+  bubble = null;
+  frameCount = 0;
+  player.x = W / 2;
+  player.vx = 0;
+  state = 'playing';
+  scoreEl.textContent = '0';
+  levelEl.textContent = '1';
+  lifeEl.textContent = '100%';
+  lifeEl.style.color = '#66ff99';
+}
+
+// ── Draw Mr. Chips (pixel-art style using canvas) ─────────────────────
+function drawMrChips(x, y, squish) {
+  ctx.save();
+  ctx.translate(x, y);
+
+  const sq = squish || 1;
+  const blink = (frameCount % 120 < 8);
+
+  // Shadow
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.ellipse(0, PLAYER_H / 2 - 4, 26 * sq, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Body (round belly)
+  ctx.fillStyle = '#f4c07f';
+  ctx.beginPath();
+  ctx.ellipse(0, 18, 24 * sq, 28, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Shirt
+  ctx.fillStyle = '#4dabf7';
+  ctx.beginPath();
+  ctx.ellipse(0, 28, 22 * sq, 22, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Belly bulge
+  ctx.fillStyle = '#74c0fc';
+  ctx.beginPath();
+  ctx.ellipse(0, 30, 13 * sq, 13, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Belt
+  ctx.fillStyle = '#333';
+  ctx.beginPath();
+  ctx.roundRect(-20 * sq, 36, 40 * sq, 6, 2);
+  ctx.fill();
+  // Buckle
+  ctx.fillStyle = '#ffe066';
+  ctx.fillRect(-5 * sq, 36, 10 * sq, 6);
+
+  // Legs
+  ctx.fillStyle = '#495057';
+  ctx.beginPath();
+  ctx.roundRect(-16 * sq, 42, 12 * sq, 22, [2, 2, 6, 6]);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.roundRect(4 * sq, 42, 12 * sq, 22, [2, 2, 6, 6]);
+  ctx.fill();
+
+  // Shoes
+  ctx.fillStyle = '#212529';
+  ctx.beginPath();
+  ctx.ellipse(-10 * sq, 64, 12 * sq, 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(10 * sq, 64, 12 * sq, 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Arms (reaching up happily)
+  const armWave = Math.sin(frameCount * 0.12) * 0.25;
+  // Left arm
+  ctx.strokeStyle = '#f4c07f';
+  ctx.lineWidth = 9;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-20 * sq, 16);
+  ctx.quadraticCurveTo(-34 * sq, 0, -28 * sq + armWave * 10, -10);
+  ctx.stroke();
+  // Right arm
+  ctx.beginPath();
+  ctx.moveTo(20 * sq, 16);
+  ctx.quadraticCurveTo(34 * sq, 0, 28 * sq - armWave * 10, -10);
+  ctx.stroke();
+
+  // Neck
+  ctx.fillStyle = '#f4c07f';
+  ctx.beginPath();
+  ctx.roundRect(-7 * sq, -10, 14 * sq, 12, 4);
+  ctx.fill();
+
+  // Head (bald, round)
+  ctx.fillStyle = '#f9d5a7';
+  ctx.beginPath();
+  ctx.ellipse(0, -26, 22 * sq, 22, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Cheeks
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = '#e07b7b';
+  ctx.beginPath();
+  ctx.ellipse(-14 * sq, -22, 6, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(14 * sq, -22, 6, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Glasses (round)
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 2.5;
+  ctx.fillStyle = 'rgba(180,220,255,0.3)';
+  // Left lens
+  ctx.beginPath();
+  ctx.arc(-9 * sq, -28, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  // Right lens
+  ctx.beginPath();
+  ctx.arc(9 * sq, -28, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  // Bridge
+  ctx.beginPath();
+  ctx.moveTo(-1 * sq, -28);
+  ctx.lineTo(1 * sq, -28);
+  ctx.stroke();
+  // Temple arms
+  ctx.beginPath();
+  ctx.moveTo(-17 * sq, -28);
+  ctx.lineTo(-21 * sq, -27);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(17 * sq, -28);
+  ctx.lineTo(21 * sq, -27);
+  ctx.stroke();
+
+  // Eyes (inside glasses)
+  if (!blink) {
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.ellipse(-9 * sq, -28, 3, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(9 * sq, -28, 3, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Eye shine
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(-8 * sq, -30, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(10 * sq, -30, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    // Blink line
+    ctx.strokeStyle = '#222';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-13 * sq, -28); ctx.lineTo(-5 * sq, -28);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(5 * sq, -28); ctx.lineTo(13 * sq, -28);
+    ctx.stroke();
+  }
+
+  // Big happy smile
+  ctx.strokeStyle = '#a0522d';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(0, -22, 10 * sq, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+
+  // Bald head shine
+  ctx.globalAlpha = 0.18;
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.ellipse(-6 * sq, -38, 6, 4, -0.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+}
+
+// ── Draw a french fry ────────────────────────────────────────────────
+function drawChip(chip) {
+  const { x, y, rot, type } = chip;
+  const len = chip.r * 2.8;  // fry length
+  const thick = chip.r * 0.38; // fry thickness
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+
+  // Shadow side
+  ctx.fillStyle = type.shadow;
+  ctx.beginPath();
+  ctx.roundRect(thick * 0.3, -len / 2, thick, len, thick * 0.4);
+  ctx.fill();
+
+  // Main fry body
+  ctx.fillStyle = type.color;
+  ctx.beginPath();
+  ctx.roundRect(-thick / 2, -len / 2, thick, len, thick * 0.4);
+  ctx.fill();
+
+  // Highlight stripe
+  ctx.fillStyle = 'rgba(255,255,255,0.28)';
+  ctx.beginPath();
+  ctx.roundRect(-thick / 2 + 2, -len / 2 + 3, thick * 0.35, len - 6, 2);
+  ctx.fill();
+
+  // Dark ends (cooked tips)
+  ctx.fillStyle = type.shadow;
+  ctx.globalAlpha = 0.55;
+  ctx.beginPath();
+  ctx.roundRect(-thick / 2, -len / 2, thick, len * 0.12, [thick * 0.4, thick * 0.4, 0, 0]);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.roundRect(-thick / 2, len / 2 - len * 0.12, thick, len * 0.12, [0, 0, thick * 0.4, thick * 0.4]);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+}
+
+// ── Draw ground / floor ───────────────────────────────────────────────
+function drawFloor() {
+  // Checkerboard floor strip
+  const floorY = H - 30;
+  const tileW = 26;
+  for (let i = 0; i < Math.ceil(W / tileW) + 1; i++) {
+    ctx.fillStyle = i % 2 === 0 ? '#1e3a5f' : '#162d4a';
+    ctx.fillRect(i * tileW, floorY, tileW, 30);
+  }
+  ctx.fillStyle = '#ffe06644';
+  ctx.fillRect(0, floorY, W, 2);
+}
+
+// ── Draw cloud background ─────────────────────────────────────────────
+const clouds = Array.from({length: 5}, (_, i) => ({
+  x: rand(0, W), y: rand(20, 100),
+  w: rand(60, 110), speed: rand(0.15, 0.35)
+}));
+
+function drawClouds() {
+  clouds.forEach(c => {
+    ctx.save();
+    ctx.globalAlpha = 0.07;
+    ctx.fillStyle = '#a0c4ff';
+    const draw = (ox, oy) => {
+      ctx.beginPath();
+      ctx.arc(ox, oy, c.w * 0.3, 0, Math.PI * 2);
+      ctx.arc(ox + c.w * 0.25, oy - c.w * 0.12, c.w * 0.22, 0, Math.PI * 2);
+      ctx.arc(ox + c.w * 0.5, oy, c.w * 0.25, 0, Math.PI * 2);
+      ctx.fill();
+    };
+    draw(c.x, c.y);
+    ctx.restore();
+    c.x += c.speed;
+    if (c.x > W + 120) c.x = -120;
+  });
+}
+
+// ── Draw Union Jack ───────────────────────────────────────────────────
+function drawUnionJack(s) {
+  const { x, y, rot } = s;
+  const w = 44, h = 28;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot + Math.sin(Date.now() * 0.003) * 0.08);
+
+  // Glow
+  ctx.shadowColor = '#4488ff';
+  ctx.shadowBlur = 14 + Math.sin(Date.now() * 0.005) * 6;
+
+  // Flag background - blue
+  ctx.fillStyle = '#012169';
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(-w/2, -h/2, w, h, 3);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(-w/2, -h/2, w, h, 3);
+  ctx.clip();
+
+  // White diagonals
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(-w/2, -h/2); ctx.lineTo(w/2, h/2);
+  ctx.moveTo(w/2, -h/2);  ctx.lineTo(-w/2, h/2);
+  ctx.stroke();
+
+  // Red diagonals
+  ctx.strokeStyle = '#C8102E';
+  ctx.lineWidth = 4.5;
+  ctx.beginPath();
+  ctx.moveTo(-w/2, -h/2); ctx.lineTo(w/2, h/2);
+  ctx.moveTo(w/2, -h/2);  ctx.lineTo(-w/2, h/2);
+  ctx.stroke();
+
+  // White cross
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.moveTo(-w/2, 0); ctx.lineTo(w/2, 0);
+  ctx.moveTo(0, -h/2); ctx.lineTo(0, h/2);
+  ctx.stroke();
+
+  // Red cross
+  ctx.strokeStyle = '#C8102E';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(-w/2, 0); ctx.lineTo(w/2, 0);
+  ctx.moveTo(0, -h/2); ctx.lineTo(0, h/2);
+  ctx.stroke();
+
+  ctx.restore();
+
+  // Border
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(-w/2, -h/2, w, h, 3);
+  ctx.stroke();
+
+  // Points label
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffe066';
+  ctx.font = 'bold 9px "Press Start 2P", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('+10', 0, h/2 + 13);
+
+  ctx.restore();
+}
+
+// ── Draw Bow Tie ──────────────────────────────────────────────────────
+function drawBowTie(s) {
+  const { x, y, rot } = s;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot + Math.sin(Date.now() * 0.004 + 1) * 0.1);
+
+  ctx.shadowColor = '#ff44cc';
+  ctx.shadowBlur = 14 + Math.sin(Date.now() * 0.005) * 5;
+
+  const col1 = '#cc0044';
+  const col2 = '#ff3377';
+
+  // Left wing
+  ctx.fillStyle = col1;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.bezierCurveTo(-6, -10, -26, -14, -28, -8);
+  ctx.bezierCurveTo(-30, -2, -28, 4, -26, 8);
+  ctx.bezierCurveTo(-24, 14, -6, 10, 0, 0);
+  ctx.fill();
+
+  // Left wing highlight
+  ctx.fillStyle = col2;
+  ctx.beginPath();
+  ctx.moveTo(-2, -2);
+  ctx.bezierCurveTo(-8, -10, -22, -13, -24, -7);
+  ctx.bezierCurveTo(-18, -9, -10, -6, -2, -2);
+  ctx.fill();
+
+  // Right wing
+  ctx.fillStyle = col1;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.bezierCurveTo(6, -10, 26, -14, 28, -8);
+  ctx.bezierCurveTo(30, -2, 28, 4, 26, 8);
+  ctx.bezierCurveTo(24, 14, 6, 10, 0, 0);
+  ctx.fill();
+
+  // Right wing highlight
+  ctx.fillStyle = col2;
+  ctx.beginPath();
+  ctx.moveTo(2, -2);
+  ctx.bezierCurveTo(8, -10, 22, -13, 24, -7);
+  ctx.bezierCurveTo(18, -9, 10, -6, 2, -2);
+  ctx.fill();
+
+  // Polka dots
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  [[-18, -4], [-12, 4], [-22, 3], [18, -4], [12, 4], [22, 3]].forEach(([dx, dy]) => {
+    ctx.beginPath(); ctx.arc(dx, dy, 2, 0, Math.PI * 2); ctx.fill();
+  });
+
+  // Centre knot
+  ctx.fillStyle = '#880022';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 6, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = col2;
+  ctx.beginPath();
+  ctx.ellipse(-1, -1, 3, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Points label
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffe066';
+  ctx.font = 'bold 9px "Press Start 2P", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('+7', 0, 22);
+
+  ctx.restore();
+}
+
+// ── Draw all specials ─────────────────────────────────────────────────
+function drawSpecials() {
+  specials.forEach(s => {
+    if (s.kind === 'unionjack') drawUnionJack(s);
+    else drawBowTie(s);
+  });
+}
+function drawBubble() {
+  if (!bubble || bubble.life <= 0) return;
+  bubble.life--;
+
+  const fade = Math.min(1, bubble.life / 30);  // fade out last 30 frames
+  const pop  = Math.min(1, (bubble.maxLife - bubble.life) / 8); // pop-in scale
+  const scale = 0.5 + pop * 0.5;
+
+  const bx = player.x + 36;
+  const by = player.y - 95;
+
+  ctx.save();
+  ctx.globalAlpha = fade;
+  ctx.translate(bx, by);
+  ctx.scale(scale, scale);
+
+  // Measure text to size bubble
+  ctx.font = 'bold 15px "Fredoka One", cursive';
+  const maxW = 190;
+  // Word-wrap
+  const words = bubble.text.split(' ');
+  const lines = [];
+  let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW - 18) {
+      if (line) lines.push(line);
+      line = w;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+
+  const lineH = 19;
+  const padX = 12, padY = 10;
+  const bw = maxW;
+  const bh = lines.length * lineH + padY * 2;
+  const ox = -bw / 2, oy = -bh;
+
+  // Bubble body
+  ctx.fillStyle = '#fffde7';
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  const r = 10;
+  ctx.moveTo(ox + r, oy);
+  ctx.lineTo(ox + bw - r, oy);
+  ctx.arcTo(ox + bw, oy, ox + bw, oy + r, r);
+  ctx.lineTo(ox + bw, oy + bh - r);
+  ctx.arcTo(ox + bw, oy + bh, ox + bw - r, oy + bh, r);
+  ctx.lineTo(ox + r, oy + bh);
+  ctx.arcTo(ox, oy + bh, ox, oy + bh - r, r);
+  ctx.lineTo(ox, oy + r);
+  ctx.arcTo(ox, oy, ox + r, oy, r);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Tail pointing down-left to Mr. Chips' mouth area
+  ctx.beginPath();
+  ctx.moveTo(-14, 0);
+  ctx.lineTo(-24, 18);
+  ctx.lineTo(-4, 2);
+  ctx.fillStyle = '#fffde7';
+  ctx.fill();
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  // Cover the tail-bubble seam
+  ctx.fillStyle = '#fffde7';
+  ctx.fillRect(ox + 1, oy + bh - 4, bw - 2, 8);
+
+  // Text
+  ctx.fillStyle = '#222';
+  ctx.font = 'bold 15px "Fredoka One", cursive';
+  ctx.textAlign = 'center';
+  lines.forEach((l, i) => {
+    ctx.fillText(l, 0, oy + padY + lineH * i + 14);
+  });
+
+  ctx.restore();
+}
+
+// ── Draw lives ────────────────────────────────────────────────────────
+function drawLives() {
+  for (let i = 0; i < 3; i++) {
+    ctx.globalAlpha = i < lives ? 1 : 0.2;
+    ctx.font = '18px serif';
+    ctx.fillText('❤️', W - 80 + i * 24, H - 6);
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ── Screen: Title ─────────────────────────────────────────────────────
+function drawTitle() {
+  ctx.clearRect(0, 0, W, H);
+
+  // BG
+  const grd = ctx.createLinearGradient(0, 0, 0, H);
+  grd.addColorStop(0, '#0d1b2a');
+  grd.addColorStop(1, '#1a3a5c');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, W, H);
+
+  drawClouds();
+  drawFloor();
+
+  // Animated fries floating around
+  ctx.save();
+  for (let i = 0; i < 8; i++) {
+    const angle = (frameCount * 0.012) + i * (Math.PI * 2 / 8);
+    const rx = W / 2 + Math.cos(angle) * 160;
+    const ry = H / 2 + Math.sin(angle * 0.7) * 80;
+    const type = CHIP_TYPES[i % CHIP_TYPES.length];
+    ctx.save();
+    ctx.translate(rx, ry);
+    ctx.rotate(angle * 1.5);
+    const len = 28, thick = 7;
+    ctx.fillStyle = type.shadow;
+    ctx.beginPath(); ctx.roundRect(thick*0.3, -len/2, thick, len, 3); ctx.fill();
+    ctx.fillStyle = type.color;
+    ctx.beginPath(); ctx.roundRect(-thick/2, -len/2, thick, len, 3); ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // Mr. Chips on title
+  const titleBob = Math.sin(frameCount * 0.06) * 6;
+  drawMrChips(W / 2, H / 2 + 80 + titleBob, 1);
+
+  // Title text
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 28px "Fredoka One", cursive';
+  ctx.fillStyle = '#ffe066';
+  ctx.shadowColor = '#ff6600';
+  ctx.shadowBlur = 18;
+  ctx.fillText('MR. CHIPS', W / 2, H / 2 - 90);
+  ctx.font = 'bold 22px "Fredoka One", cursive';
+  ctx.fillStyle = '#ff9f43';
+  ctx.fillText('LOVES CHIPS!', W / 2, H / 2 - 62);
+  ctx.shadowBlur = 0;
+
+  // Pulsing start
+  const pulse = Math.abs(Math.sin(frameCount * 0.07));
+  ctx.globalAlpha = 0.5 + pulse * 0.5;
+  ctx.font = '9px "Press Start 2P", monospace';
+  ctx.fillStyle = '#ffe066';
+  ctx.fillText('PRESS SPACE TO START', W / 2, H / 2 + 200);
+  ctx.globalAlpha = 1;
+}
+
+// ── Screen: Game Over ─────────────────────────────────────────────────
+function drawGameOver() {
+  ctx.clearRect(0, 0, W, H);
+  const grd = ctx.createLinearGradient(0, 0, 0, H);
+  grd.addColorStop(0, '#2d0000');
+  grd.addColorStop(1, '#0d1b2a');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, W, H);
+  drawFloor();
+
+  // Sad Mr. Chips (tilted)
+  ctx.save();
+  ctx.translate(W / 2, H / 2 + 60);
+  ctx.rotate(0.15);
+  drawMrChips(0, 0, 0.9);
+  ctx.restore();
+
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 32px "Fredoka One", cursive';
+  ctx.fillStyle = '#ff6b6b';
+  ctx.shadowColor = '#cc0000';
+  ctx.shadowBlur = 20;
+  ctx.fillText('OH NO!', W / 2, H / 2 - 110);
+  ctx.shadowBlur = 0;
+
+  ctx.font = '9px "Press Start 2P", monospace';
+  ctx.fillStyle = '#ffe066';
+  ctx.fillText('CHIPS MISSED!', W / 2, H / 2 - 75);
+
+  ctx.font = 'bold 20px "Fredoka One", cursive';
+  ctx.fillStyle = '#aaa';
+  ctx.fillText('YOU CAUGHT', W / 2, H / 2 - 42);
+  ctx.font = 'bold 38px "Fredoka One", cursive';
+  ctx.fillStyle = '#ffe066';
+  ctx.shadowColor = '#ff9900';
+  ctx.shadowBlur = 14;
+  ctx.fillText(`${score} CHIPS`, W / 2, H / 2 - 10);
+  ctx.shadowBlur = 0;
+
+  const pulse = Math.abs(Math.sin(frameCount * 0.07));
+  ctx.globalAlpha = 0.5 + pulse * 0.5;
+  ctx.font = '8px "Press Start 2P", monospace';
+  ctx.fillStyle = '#fff';
+  ctx.fillText('PRESS SPACE TO TRY AGAIN', W / 2, H / 2 + 200);
+  ctx.globalAlpha = 1;
+}
+
+// ── Main game loop ────────────────────────────────────────────────────
+function update() {
+  frameCount++;
+  bobble = Math.sin(frameCount * 0.15) * 3;
+
+  if (state !== 'playing') return;
+
+  // Player movement
+  const moving = keys['ArrowLeft'] || keys['KeyA'] || keys['ArrowRight'] || keys['KeyD'];
+  if (keys['ArrowLeft'] || keys['KeyA']) player.vx -= 1.2;
+  if (keys['ArrowRight'] || keys['KeyD']) player.vx += 1.2;
+  player.vx *= 0.78;
+  player.x = Math.max(PLAYER_W / 2, Math.min(W - PLAYER_W / 2, player.x + player.vx));
+
+  // Spawn chips
+  const spawnRate = Math.max(28, 70 - level * 5);
+  if (frameCount % spawnRate === 0) spawnChip();
+  // Spawn specials every ~8 seconds
+  if (frameCount % 480 === 240) spawnSpecial();
+  if (frameCount % 400 === 0) {
+    level = Math.min(10, level + 1);
+    levelEl.textContent = level;
+  }
+
+  // Catch boundaries
+  const catchY = player.y - 20;
+  const catchLeft = player.x - 28;
+  const catchRight = player.x + 28;
+
+  // Update specials
+  specials = specials.filter(s => {
+    s.x += s.vx;
+    s.y += s.vy;
+    s.rot += s.rotV;
+
+    if (s.y > catchY && s.y < catchY + 36 &&
+        s.x > catchLeft - 10 && s.x < catchRight + 10) {
+      score += s.points;
+      scoreEl.textContent = score;
+      lifeExpectancy = Math.max(0, lifeExpectancy - 5);
+      lifeEl.textContent = lifeExpectancy + '%';
+      const g = Math.round((lifeExpectancy / 100) * 255);
+      const r2 = Math.round(((100 - lifeExpectancy) / 100) * 255);
+      lifeEl.style.color = `rgb(${r2},${g},60)`;
+      spawnParticles(s.x, s.y, s.kind === 'unionjack' ? '#C8102E' : '#ff3377');
+      spawnParticles(s.x, s.y, s.kind === 'unionjack' ? '#012169' : '#cc0044');
+      showBubble(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
+      return false;
+    }
+    if (s.y > H + 20) return false;
+    return true;
+  });
+
+  // Update chips
+
+  chips = chips.filter(chip => {
+    chip.x += chip.vx;
+    chip.y += chip.vy;
+    chip.rot += chip.rotV;
+
+    // Caught?
+    if (chip.y > catchY && chip.y < catchY + 30 &&
+        chip.x > catchLeft && chip.x < catchRight) {
+      score += chip.type.points;
+      scoreEl.textContent = score;
+      // Each chip costs 2% life expectancy (min 0)
+      lifeExpectancy = Math.max(0, lifeExpectancy - 2);
+      lifeEl.textContent = lifeExpectancy + '%';
+      // Colour shifts green → yellow → red as it drops
+      const g = Math.round((lifeExpectancy / 100) * 255);
+      const r = Math.round(((100 - lifeExpectancy) / 100) * 255);
+      lifeEl.style.color = `rgb(${r},${g},60)`;
+      spawnParticles(chip.x, chip.y, chip.type.color);
+      showBubble(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
+      return false;
+    }
+
+    // Missed?
+    if (chip.y > H + 10) {
+      lives--;
+      shakeFrames = 18;
+      if (lives <= 0) { state = 'gameover'; }
+      return false;
+    }
+
+    return true;
+  });
+
+  // Particles
+  particles = particles.filter(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.15;
+    p.life -= p.decay;
+    return p.life > 0;
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  if (state === 'title') { drawTitle(); return; }
+  if (state === 'gameover') { drawGameOver(); return; }
+
+  // Camera shake
+  let sx = 0, sy = 0;
+  if (shakeFrames > 0) {
+    sx = (Math.random() - 0.5) * 8;
+    sy = (Math.random() - 0.5) * 5;
+    shakeFrames--;
+  }
+  ctx.save();
+  ctx.translate(sx, sy);
+
+  // BG gradient
+  const grd = ctx.createLinearGradient(0, 0, 0, H);
+  grd.addColorStop(0, '#0d1b2a');
+  grd.addColorStop(0.6, '#112244');
+  grd.addColorStop(1, '#1a3a5c');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, W, H);
+
+  drawClouds();
+  drawFloor();
+
+  // Draw chips
+  chips.forEach(drawChip);
+
+  // Draw specials
+  drawSpecials();
+
+  // Particles
+  particles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+
+  // Mr. Chips
+  const moving = Math.abs(player.vx) > 0.3;
+  const squish = moving ? (1 + Math.abs(Math.sin(frameCount * 0.3)) * 0.06) : 1;
+  drawMrChips(player.x, player.y + bobble, squish);
+
+  // Speech bubble
+  drawBubble();
+
+  // Lives
+  drawLives();
+
+  ctx.restore();
+
+  // Level flash
+  if (frameCount % 400 < 60) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = Math.sin((frameCount % 400) * 0.08) * 0.9;
+    ctx.font = 'bold 28px "Fredoka One", cursive';
+    ctx.fillStyle = '#ffe066';
+    ctx.shadowColor = '#ff9900';
+    ctx.shadowBlur = 20;
+    ctx.fillText(`LEVEL ${level}!`, W / 2, H / 2);
+    ctx.restore();
+  }
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
