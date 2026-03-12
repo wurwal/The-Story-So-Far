@@ -98,6 +98,53 @@
     letter-spacing: 1px;
     text-align: center;
   }
+
+  #mobile-controls {
+    display: none;
+    gap: 16px;
+    margin-top: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mob-btn {
+    background: rgba(255,224,102,0.15);
+    border: 2px solid #ffe066;
+    border-radius: 12px;
+    color: #ffe066;
+    font-size: 28px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    cursor: pointer;
+    box-shadow: 0 0 14px #ff990055;
+    transition: background 0.1s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mob-btn:active, .mob-btn.pressed {
+    background: rgba(255,224,102,0.35);
+    transform: scale(0.93);
+  }
+
+  #mob-start {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    width: 110px;
+    height: 50px;
+    letter-spacing: 0.5px;
+  }
+
+  @media (pointer: coarse) {
+    #mobile-controls { display: flex; }
+    #controls-hint { display: none; }
+    body { overflow-y: auto; }
+  }
 </style>
 </head>
 <body>
@@ -124,6 +171,11 @@
     </div>
   </div>
   <div id="controls-hint">← → ARROW KEYS or A/D to move &nbsp;|&nbsp; SPACE to start</div>
+  <div id="mobile-controls">
+    <button class="mob-btn" id="mob-left">◀</button>
+    <button class="mob-btn" id="mob-start">START / RESTART</button>
+    <button class="mob-btn" id="mob-right">▶</button>
+  </div>
 </div>
 
 <script>
@@ -178,7 +230,7 @@ const PLAYER_W = 62, PLAYER_H = 80;
 const player = {
   x: W / 2,
   y: H - 70,
-  speed: 8.5,
+  speed: 5.5,
   vx: 0,
 };
 
@@ -189,6 +241,21 @@ window.addEventListener('keydown', e => {
   if ((e.code === 'Space') && state !== 'playing') startGame();
 });
 window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// ── Mobile touch controls ─────────────────────────────────────────────
+const mobLeft  = document.getElementById('mob-left');
+const mobRight = document.getElementById('mob-right');
+const mobStart = document.getElementById('mob-start');
+
+function holdBtn(btn, code) {
+  btn.addEventListener('touchstart', e => { e.preventDefault(); keys[code] = true;  btn.classList.add('pressed'); }, { passive: false });
+  btn.addEventListener('touchend',   e => { e.preventDefault(); keys[code] = false; btn.classList.remove('pressed'); }, { passive: false });
+  btn.addEventListener('touchcancel',e => { keys[code] = false; btn.classList.remove('pressed'); });
+}
+holdBtn(mobLeft,  'ArrowLeft');
+holdBtn(mobRight, 'ArrowRight');
+mobStart.addEventListener('touchstart', e => { e.preventDefault(); if (state !== 'playing') startGame(); });
+mobStart.addEventListener('click', () => { if (state !== 'playing') startGame(); });
 
 // ── Chip types (french fry varieties!) ───────────────────────────────
 const CHIP_TYPES = [
@@ -204,7 +271,7 @@ function randInt(a, b) { return Math.floor(rand(a, b + 1)); }
 
 function spawnChip() {
   const type = CHIP_TYPES[randInt(0, CHIP_TYPES.length - 1)];
-  const baseSpeed = 1.8 + level * 0.35;
+  const baseSpeed = 1.1 + level * 0.22;
   chips.push({
     x: rand(28, W - 28),
     y: -30,
@@ -772,10 +839,12 @@ function drawBubble() {
 
 // ── Draw lives ────────────────────────────────────────────────────────
 function drawLives() {
+  ctx.font = '13px serif';
   for (let i = 0; i < 10; i++) {
-    ctx.globalAlpha = i < lives ? 1 : 0.2;
-    ctx.font = '18px serif';
-    ctx.fillText('❤️', W - 80 + i * 24, H - 6);
+    ctx.globalAlpha = i < lives ? 1 : 0.18;
+    const col = i % 5;
+    const row = Math.floor(i / 5);
+    ctx.fillText('❤️', 8 + col * 17, H - 22 + row * 16);
   }
   ctx.globalAlpha = 1;
 }
